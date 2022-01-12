@@ -34,4 +34,20 @@ def ignore_command(command, ignore):
     * True, если в команде содержится слово из списка ignore
     * False - если нет
     '''
+    
     return any(word in command for word in ignore)
+
+def convert_config_to_dict(config_filename):
+    cfg = {}
+    with open(config_filename) as file:
+        for line in file:
+            line = line.rstrip()
+            if line and not (line.startswith("!") or ignore_command(line, ignore)):
+                if line[0].isalnum():
+                    command = line
+                    cfg[command] = []
+                else:
+                    cfg[command].append(line.rstrip())
+    return cfg
+
+print(convert_config_to_dict("config_sw1.txt"))

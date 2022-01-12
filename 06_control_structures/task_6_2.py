@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
 Задание 6.2
@@ -14,3 +15,16 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+ip = str(input('ip: '))
+if 1 <= int(ip.split('.')[0]) <= 223:
+    type = 'unicast'
+elif 224 <= int(ip.split('.')[0]) <= 239:
+    type = 'multicast'
+elif ip == '255.255.255.255':
+    type = 'local broadcast'
+elif ip == '0.0.0.0':
+    type = 'unussigned'
+else:
+    type = 'unused'
+
+print(type)

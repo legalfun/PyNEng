@@ -1,15 +1,15 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Задание 6.1
+mac is list of mac addresses as XXXX:XXXX:XXXX.
+In cisco MAC-addresses used as XXXX.XXXX.XXXX.
 
-Список mac содержит MAC-адреса в формате XXXX:XXXX:XXXX.
-Однако, в оборудовании cisco MAC-адреса используются в формате XXXX.XXXX.XXXX.
+script convert MAC-addresses to cisco format in list mac_cisco
 
-Создать скрипт, который преобразует MAC-адреса в формат cisco
-и добавляет их в новый список mac_cisco
-
-Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
 mac = ['aabb:cc80:7000', 'aabb:dd80:7340', 'aabb:ee80:7000', 'aabb:ff80:7000']
-
+mac_cisco = []
+for m in mac:
+    mac_cisco.append(m.replace(':', '.'))
+print(mac_cisco)

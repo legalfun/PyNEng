@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
 Задание 9.3a
@@ -23,3 +24,20 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+
+def get_int_vlan_map(config_filename):
+    # intf - vlan info get from cfg config_file
+    access_dict = {}
+    trunk_dict = {}
+    with open(config_filename) as cfg:
+        for line in cfg:
+            if "interface FastEthernet" in line:
+                current_interface = line.split()[-1]
+                access_dict[current_interface] = 1
+            elif "access vlan" in line:
+                access_dict[current_interface] = int(line.split()[-1])
+            elif "allowed vlan" in line:
+                trunk_dict[current_interface] = [int(vlan) for vlan in line.split()[-1].split(",")]
+    return(access_dict, trunk_dict)
+
+print(get_int_vlan_map("config_sw1.txt"))
