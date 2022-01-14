@@ -48,38 +48,25 @@ trunk = {
         '0/4': ['del', '17']
     }
 
-# for intf, vlan in access.items():
-#     print('interface FastEthernet' + intf)
-#     for command in access_template:
-#         if command.endswith('access vlan'):
-#             print(' {} {}'.format(command, vlan))
-#         else:
-#             print(' {}'.format(command))
-#
-# for intf, vlans in trunk.items():
-# 	print('interface FastEthernet' + intf)
-# 	action = vlans[0]
-# 	vlans_str = ','.join(vlans[1:])
-# 	for command in trunk_template:
-# 		if 'allowed' in command:
-# 			if 'add' in vlans:
-# 				print(f'switchport trunk allowed vlan add {vlans_str}')
-# 			elif 'del' in vlans:
-# 				print(f'switchport trunk allowed vlan remove {vlans_str}')
-# 			elif 'only' in vlans:
-# 				print(f'switchport trunk allowed vlan {vlans_str}')
-# 		else:
-# 			print(command)
-
-trunk_actions = {"add": " add", "del": " remove", "only": ""}
-
-for intf, value in trunk.items():
-    print(f"interface FastEthernet {intf}")
-
-    for command in trunk_template:
-        if command.endswith("allowed vlan"):
-            action = value[0]
-            vlans = ",".join(value[1:])
-            print(f" {command}{trunk_actions[action]} {vlans}")
+for intf, vlan in access.items():
+    print('interface FastEthernet' + intf)
+    for command in access_template:
+        if command.endswith('access vlan'):
+            print(' {} {}'.format(command, vlan))
         else:
-            print(f" {command}")
+            print(' {}'.format(command))
+
+for intf, vlans in trunk.items():
+	print('interface FastEthernet' + intf)
+	action = vlans[0]
+	vlans_str = ','.join(vlans[1:])
+	for command in trunk_template:
+		if 'allowed' in command:
+			if 'add' in vlans:
+				print(f'switchport trunk allowed vlan add {vlans_str}')
+			elif 'del' in vlans:
+				print(f'switchport trunk allowed vlan remove {vlans_str}')
+			elif 'only' in vlans:
+				print(f'switchport trunk allowed vlan {vlans_str}')
+		else:
+			print(command)
