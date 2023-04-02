@@ -37,6 +37,7 @@
 интерфейсов, но при этом не проверяет настроенные номера тунелей и другие команды.
 Они должны быть, но тест упрощен, чтобы было больше свободы выполнения.
 """
+import yaml
 
 data = {
     "tun_num": None,
@@ -45,3 +46,38 @@ data = {
     "tun_ip_1": "10.0.1.1 255.255.255.252",
     "tun_ip_2": "10.0.1.2 255.255.255.252",
 }
+
+import re
+from netmiko import ConnectHandler
+from task_20_5 import create_vpn_config
+
+
+def configure_vpn(src_device_params, dst_device_params, src_template, dst_template, vpn_data_dict):
+    with ConnectHandler(**src_device_params) as src, ConnectHandler(**dst_device_params) as dst:
+        src.enable(), dst.enable()
+
+        tun_src = src.send_command('sh run | include ^interface Tunnel')
+        tun_dst = dst.send_command('sh run | include ^interface Tunnel')
+        nums = [int(num) for num in re.findall(r'Tunnel(\d+)', tun_src + tun_dst)]
+        if not nums:
+            tun_num = 0
+        diff = set(range(min(nums), max(nums) + 1)) - set(nums)
+        if diff:
+            tun_num = min(diff)
+        else:
+            tun_num = max(nums) + 1
+        vpn_data_dict['tun_num'] = tun_num
+
+        vpn1, vpn2 = create_vpn_config(src_template, dst_template, vpn_data_dict)
+
+        src_result = src.send_config_set(vpn1.split('\n'))
+        dst_result = dst.send_config_set(vpn2.split('\n'))
+
+    return src_result, dst_result
+
+
+if __name__ == '__main__':
+    with open('devices.yaml') as f:
+        devices = yaml.safe_load(f)
+    r1, r2 = devices[:2]
+    print(configure_vpn(r1, r2, 'templates/gre_ipsec_vpn_1.txt', 'templates/gre_ipsec_vpn_2.txt', data))

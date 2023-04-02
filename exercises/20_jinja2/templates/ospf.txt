@@ -1,0 +1,32 @@
+router ospf {{process}}
+ router-id {{router_id}}
+ auto-cost reference-bandwidth {{ref_bw}}
+
+{%for ospf_intf in ospf_intf%}
+ network {{ospf_intf.ip}} 0.0.0.0 area {{ospf_intf.ip}}
+{%endfor%}
+
+{%for ospf_intf in ospf_intf if ospf_intf.passive %}
+ passive-interface {{ospf_intf.name}}
+{%endfor%}
+
+{%for ospf_intf in ospf_intf if not ospf_intf.passive %}
+interface {{ospf_intf.name}}
+ ip ospf hello-interval 1
+{%endfor%}
+
+or in one loop not grouped:
+
+router ospf {{process}}
+ router-id {{router_id}}
+ auto-cost reference-bandwidth {{ref_bw}}
+
+{%for ospf_intf in ospf_intf%}
+ network {{ospf_intf.ip}} 0.0.0.0 area {{ospf_intf.ip}}
+{%if ospf_intf.passive %}
+ passive-interface {{ospf_intf.name}}
+{%else%}
+interface {{ospf_intf.name}}
+ ip ospf hello-interval 1
+{%endif%}
+{%endfor%}
